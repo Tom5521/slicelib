@@ -81,3 +81,22 @@ func (s Slice[T]) Equal(v Slice[T]) bool {
 		return reflect.DeepEqual(e1, e2)
 	})
 }
+
+func (s Slice[T]) EqualFunc(v Slice[T], f func(e1, e2 T) bool) bool {
+	return slices.EqualFunc(s, v, f)
+}
+
+func (s *Slice[T]) Sort(f func(a, b T) int) {
+	slices.SortFunc(*s, f)
+}
+
+func (s *Slice[T]) Filter(f func(T) bool) {
+	var newSlice Slice[T]
+	for _, i := range *s {
+		if f(i) {
+			newSlice.Append(i)
+		}
+	}
+
+	*s = newSlice
+}

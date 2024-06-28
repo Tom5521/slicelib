@@ -63,6 +63,25 @@ func (s *ComparableSlice[T]) RemoveDuplicates() {
 	*s = (*s)[:j]
 }
 
+func (s ComparableSlice[T]) EqualFunc(v Slice[T], f func(e1, e2 T) bool) bool {
+	return slices.EqualFunc(s, v, f)
+}
+
+func (s *ComparableSlice[T]) Sort(f func(a, b T) int) {
+	slices.SortFunc(*s, f)
+}
+
+func (s *ComparableSlice[T]) Filter(f func(T) bool) {
+	var newSlice ComparableSlice[T]
+	for _, i := range *s {
+		if f(i) {
+			newSlice.Append(i)
+		}
+	}
+
+	*s = newSlice
+}
+
 // CUSTOM METHODS
 
 func (s ComparableSlice[T]) Index(v T) int {
