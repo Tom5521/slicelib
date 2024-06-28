@@ -95,3 +95,16 @@ func TestInsert(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestFilter(t *testing.T) {
+	a := sliceutils.Slice[int]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	b := []int{2, 4, 6, 8, 10}
+
+	a.Filter(func(i int) bool {
+		return i%2 == 0
+	})
+
+	if !a.Equal(b) {
+		t.Fail()
+	}
+}
