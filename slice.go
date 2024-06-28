@@ -86,7 +86,7 @@ func (s Slice[T]) EqualFunc(v Slice[T], f func(e1, e2 T) bool) bool {
 	return slices.EqualFunc(s, v, f)
 }
 
-func (s *Slice[T]) Sort(f func(a, b T) int) {
+func (s *Slice[T]) SortFunc(f func(a, b T) int) {
 	slices.SortFunc(*s, f)
 }
 
