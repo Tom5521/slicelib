@@ -1,9 +1,9 @@
-package sliceutils_test
+package slicelib_test
 
 import (
 	"testing"
 
-	sliceutils "github.com/Tom5521/slice-utils"
+	sliceutils "github.com/Tom5521/slicelib"
 )
 
 func TestEqual(t *testing.T) {

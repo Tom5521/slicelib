@@ -1,4 +1,4 @@
-package sliceutils
+package slicelib
 
 import (
 	"slices"

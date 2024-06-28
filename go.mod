@@ -1,3 +1,3 @@
-module github.com/Tom5521/slice-utils
+module github.com/Tom5521/slicelib
 
 go 1.22.4
