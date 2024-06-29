@@ -7,7 +7,7 @@ import (
 )
 
 func TestOrderedSort(t *testing.T) {
-	a := slicelib.OrderedSlice[int]{3, 1, 2}
+	a := slicelib.NewOrderedSlice(3, 1, 2)
 	b := []int{1, 2, 3}
 
 	a.Sort()
@@ -18,7 +18,7 @@ func TestOrderedSort(t *testing.T) {
 }
 
 func TestOrderedBinarySearch(t *testing.T) {
-	a := slicelib.OrderedSlice[int]{1, 2, 3, 4, 5, 6, 7, 8, 9}
+	a := slicelib.NewOrderedSlice(1, 2, 3, 4, 5, 6, 7, 8, 9)
 
 	_, found := a.BinarySearch(5)
 

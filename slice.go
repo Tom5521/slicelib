@@ -9,14 +9,18 @@ type Slice[T any] struct {
 	slice []T
 }
 
-func NewSlice[T any](slice []T) Slice[T] {
+func NewSlice[T any](slice ...T) Slice[T] {
 	return Slice[T]{
 		slice: slice,
 	}
 }
 
 func (s Slice[T]) Slice() []T {
-	return []T(s.slice)
+	return s.slice
+}
+
+func (s *Slice[T]) SliceP() *[]T {
+	return &s.slice
 }
 
 func (s *Slice[T]) Append(items ...T) {

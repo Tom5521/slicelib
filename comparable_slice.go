@@ -8,6 +8,10 @@ type ComparableSlice[T comparable] struct {
 	Slice[T]
 }
 
+func NewComparableSlice[T comparable](slice ...T) ComparableSlice[T] {
+	return ComparableSlice[T]{NewSlice(slice...)}
+}
+
 func (s ComparableSlice[T]) Index(v T) int {
 	return slices.Index(s.slice, v)
 }

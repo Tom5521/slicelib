@@ -9,8 +9,8 @@ type OrderedSlice[T cmp.Ordered] struct {
 	Slice[T]
 }
 
-func NewOrderedSlice[T cmp.Ordered](slice []T) OrderedSlice[T] {
-	return OrderedSlice[T]{Slice: NewSlice(slice)}
+func NewOrderedSlice[T cmp.Ordered](slice ...T) OrderedSlice[T] {
+	return OrderedSlice[T]{NewSlice(slice...)}
 }
 
 func (s *OrderedSlice[T]) Sort() {
