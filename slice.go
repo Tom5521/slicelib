@@ -32,9 +32,7 @@ func (s *Slice[T]) Clear() {
 }
 
 func (s Slice[T]) Copy() Slice[T] {
-	return Slice[T]{
-		slice: slices.Clone(s.slice),
-	}
+	return NewSlice(slices.Clone(s.slice)...)
 }
 
 func (s Slice[T]) Index(v T) int {
