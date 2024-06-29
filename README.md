@@ -7,7 +7,7 @@ This repository contains a collection of utility functions and types for working
 You can install my module with this command
 
 ```bash
-go get github.com/Tom5521/slicelib
+go get github.com/Tom5521/slicelib@latest
 ```
 
 ## Usage
