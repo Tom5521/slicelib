@@ -25,7 +25,7 @@ import (
 )
 
 func main(){
-	a := slicelib.Slice[string]{"a1", "a2", "a3", "b1", "b2", "b3"}
+	a := slicelib.NewSlice("a1", "a2", "a3", "b1", "b2", "b3")
 
 	a.Filter(func(s string) bool {
 		return strings.HasPrefix(s, "a")
@@ -45,7 +45,7 @@ import (
 )
 
 func main() {
-	a := slicelib.Slice[string]{"a1", "a2", "a3", "b1", "b2", "b3"}
+	a := slicelib.NewSlice("a1", "a2", "a3", "b1", "b2", "b3")
 
 	contains := a.Contains("b2")
 
