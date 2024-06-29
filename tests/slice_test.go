@@ -1,6 +1,7 @@
 package slicelib_test
 
 import (
+	"slices"
 	"testing"
 
 	sliceutils "github.com/Tom5521/slicelib"
@@ -105,6 +106,14 @@ func TestFilter(t *testing.T) {
 	})
 
 	if !a.Equal(b) {
+		t.Fail()
+	}
+}
+
+func TestCopy(t *testing.T) {
+	a := sliceutils.NewSlice(1, 2, 3)
+
+	if !slices.Equal(a.Slice(), a.Copy().Slice()) {
 		t.Fail()
 	}
 }
