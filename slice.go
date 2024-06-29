@@ -105,12 +105,12 @@ func (s *Slice[T]) SortFunc(f func(a, b T) int) {
 }
 
 func (s *Slice[T]) Filter(f func(T) bool) {
-	var newSlice Slice[T]
+	var newSlice []T
 	for _, i := range s.slice {
 		if f(i) {
-			newSlice.Append(i)
+			newSlice = append(newSlice, i)
 		}
 	}
 
-	*s = newSlice
+	s.slice = newSlice
 }
