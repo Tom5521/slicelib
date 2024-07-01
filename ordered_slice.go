@@ -6,13 +6,13 @@ import (
 )
 
 type OrderedSlice[T cmp.Ordered] struct {
-	ComparableSlice[T]
+	Slice[T]
 }
 
 // Create a new OrderedSlice object.
 // Which only implements the cmp.Ordered and comparable interfaces.
 func NewOrderedSlice[T cmp.Ordered](slice ...T) OrderedSlice[T] {
-	return OrderedSlice[T]{NewComparableSlice(slice...)}
+	return OrderedSlice[T]{NewSlice(slice...)}
 }
 
 // A shortcut to slices.Sort.

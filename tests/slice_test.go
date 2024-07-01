@@ -1,7 +1,6 @@
 package slicelib_test
 
 import (
-	"slices"
 	"testing"
 
 	sliceutils "github.com/Tom5521/slicelib"
@@ -90,7 +89,7 @@ func TestInsert(t *testing.T) {
 	a := sliceutils.NewSlice(1, 2, 3)
 	b := []int{1, 2, 3, 3}
 
-	a.Insert(len(a.Slice())-1, 3)
+	a.Insert(len(a.S())-1, 3)
 
 	if !a.Equal(b) {
 		t.Fail()
@@ -113,7 +112,7 @@ func TestFilter(t *testing.T) {
 func TestCopy(t *testing.T) {
 	a := sliceutils.NewSlice(1, 2, 3)
 
-	if !slices.Equal(a.Slice(), a.Copy().Slice()) {
+	if !a.Equal(a.Copy().S()) {
 		t.Fail()
 	}
 }

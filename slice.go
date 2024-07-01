@@ -16,13 +16,13 @@ func NewSlice[T any](slice ...T) Slice[T] {
 	}
 }
 
-// Return the element of the given index
+// Return the element of the given index.
 func (s Slice[T]) Elem(index int) T {
 	return s.slice[index]
 }
 
 // Returns a normal slice of go.
-func (s Slice[T]) Slice() []T {
+func (s Slice[T]) S() []T {
 	return s.slice
 }
 
