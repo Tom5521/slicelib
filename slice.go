@@ -143,3 +143,9 @@ func (s *Slice[T]) Filter(f func(T) bool) {
 
 	s.slice = newSlice
 }
+
+func (s *Slice[T]) Range(yield func(k int, v T) bool) {
+	for i, j := range s.slice {
+		yield(i, j)
+	}
+}
