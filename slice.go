@@ -17,7 +17,14 @@ func NewSlice[T any](slice ...T) Slice[T] {
 }
 
 // Return the element of the given index.
+//
+// Deprecated: Uses Slice.At instead.
 func (s Slice[T]) Elem(index int) T {
+	return s.At(index)
+}
+
+// Return the element of the given index.
+func (s Slice[T]) At(index int) T {
 	return s.slice[index]
 }
 
