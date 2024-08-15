@@ -11,9 +11,7 @@ type Slice[T any] struct {
 
 // Creates a new object of type Slice.
 func NewSlice[T any](slice ...T) Slice[T] {
-	return Slice[T]{
-		slice: slice,
-	}
+	return Slice[T]{slice}
 }
 
 // Return the element of the given index.
@@ -129,9 +127,17 @@ func (s Slice[T]) Equal(v []T) bool {
 	})
 }
 
+func (s Slice[T]) EqualSlice(v Slice[T]) bool {
+	return s.Equal(v.S())
+}
+
 // A shortcut to slices.EqualFunc.
 func (s Slice[T]) EqualFunc(v []T, f func(e1, e2 T) bool) bool {
 	return slices.EqualFunc(s.slice, v, f)
+}
+
+func (s Slice[T]) EqualSliceFunc(v Slice[T], f func(e1, e2 T) bool) bool {
+	return slices.EqualFunc(s.slice, v.S(), f)
 }
 
 // A direct access to slices.SortFunc.

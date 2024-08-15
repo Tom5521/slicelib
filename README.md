@@ -58,7 +58,7 @@ func main() {
 ### The Slice types has the following methods:
 
 - At
-- Elem |**(deprecated)**
+- Elem **(deprecated)**
 - S
 - SliceP
 - Append
@@ -75,7 +75,9 @@ func main() {
 - Contains
 - RemoveDuplicates
 - Equal
+- EqualSlice
 - EqualFunc
+- EqualSliceFunc
 - SortFunc
 - Filter
 - Range
