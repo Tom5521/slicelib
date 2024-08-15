@@ -2,6 +2,8 @@
 
 This repository contains a collection of utility functions and types for working with slices in Go. These utilities provide convenient methods for manipulating and comparing slices, making your Go code more efficient and readable.
 
+The minimum required version of go is 1.18.
+
 ## Installation
 
 You can install my module with this command
