@@ -31,7 +31,7 @@ func main(){
 		return strings.HasPrefix(s, "a")
 	})
 
-	fmt.Println(a) // Output: [a1 a2 a3]
+fmt.Println(a) // Output: [a1 a2 a3]
 }
 ```
 
@@ -55,7 +55,10 @@ func main() {
 
 ### The Slice types has the following methods:
 
-- Slice
+- At
+- Elem |**(deprecated)**
+- S
+- SliceP
 - Append
 - Clear
 - Copy
@@ -73,11 +76,13 @@ func main() {
 - EqualFunc
 - SortFunc
 - Filter
+- Range
 
 #### Only on OrderedSlice:
 
 - BinarySearch
 - Sort
+- IsSorted
 
 ## License
 
