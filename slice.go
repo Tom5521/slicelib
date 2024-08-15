@@ -151,6 +151,7 @@ func (s *Slice[T]) Filter(f func(T) bool) {
 	s.slice = newSlice
 }
 
+// An implementation of iter.Seq2 for go 1.23 or later.
 func (s *Slice[T]) Range(yield func(k int, v T) bool) {
 	for i, j := range s.slice {
 		yield(i, j)

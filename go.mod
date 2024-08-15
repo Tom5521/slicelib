@@ -1,3 +1,3 @@
 module github.com/Tom5521/slicelib
 
-go 1.21
+go 1.18
