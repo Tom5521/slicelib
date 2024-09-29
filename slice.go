@@ -1,8 +1,10 @@
 package slicelib
 
 import (
+	"fmt"
 	"reflect"
 	"slices"
+	"strings"
 )
 
 type Slice[T any] struct {
@@ -162,4 +164,21 @@ func (s *Slice[T]) Range(yield func(k int, v T) bool) {
 	for i, j := range s.slice {
 		yield(i, j)
 	}
+}
+
+func (s Slice[T]) String() string {
+	var b strings.Builder
+	b.WriteString("[")
+	s.Range(func(k int, v T) bool {
+		fmt.Fprintf(&b, " %v", v)
+		if k != s.Len()-1 {
+			b.WriteString(",")
+		}
+
+		return true
+	})
+
+	b.WriteString(" ]")
+
+	return b.String()
 }

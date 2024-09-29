@@ -116,3 +116,12 @@ func TestCopy(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestString(t *testing.T) {
+	a := sliceutils.NewSlice(1, 2, 3)
+	expected := "[ 1, 2, 3 ]"
+
+	if a.String() != expected {
+		t.Fail()
+	}
+}
