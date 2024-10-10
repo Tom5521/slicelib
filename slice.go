@@ -7,6 +7,16 @@ import (
 	"strings"
 )
 
+func deepEqual[T any](t1 T) func(T) bool {
+	return func(t T) bool {
+		return reflect.DeepEqual(t1, t)
+	}
+}
+
+func deepEqual2[T any](t1, t2 T) bool {
+	return reflect.DeepEqual(t1, t2)
+}
+
 type Slice[T any] struct {
 	slice []T
 }
@@ -60,9 +70,7 @@ func (s Slice[T]) Copy() Slice[T] {
 //
 // Returns the first occurrence of the supplied element.
 func (s Slice[T]) Index(v T) int {
-	return slices.IndexFunc(s.slice, func(e T) bool {
-		return reflect.DeepEqual(e, v)
-	})
+	return slices.IndexFunc(s.slice, deepEqual(v))
 }
 
 // Call the slices.Insert function with the internal slice.
@@ -103,9 +111,7 @@ func (s Slice[T]) Len() int {
 // Returns true if the slice contains the element,
 // comparing with slices.ContainsFunc and reflect.DeepEqual.
 func (s Slice[T]) Contains(v T) bool {
-	return slices.ContainsFunc(s.slice, func(e T) bool {
-		return reflect.DeepEqual(e, v)
-	})
+	return slices.ContainsFunc(s.slice, deepEqual(v))
 }
 
 // Removes duplicates from the slice making all elements unique.
@@ -124,9 +130,7 @@ func (s *Slice[T]) RemoveDuplicates() {
 
 // Returns a slices.EqualFunc compared with reflect.DeepEqual.
 func (s Slice[T]) Equal(v []T) bool {
-	return slices.EqualFunc(s.slice, v, func(e1 T, e2 T) bool {
-		return reflect.DeepEqual(e1, e2)
-	})
+	return slices.EqualFunc(s.slice, v, deepEqual2[T])
 }
 
 func (s Slice[T]) EqualSlice(v Slice[T]) bool {
