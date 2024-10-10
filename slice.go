@@ -38,12 +38,12 @@ func (s Slice[T]) At(index int) T {
 	return s.slice[index]
 }
 
-// Returns a normal slice of go.
+// Return the built-in slice.
 func (s Slice[T]) S() []T {
 	return s.slice
 }
 
-// Returns a pointer of a normal go slice.
+// Return the pointer of the golang built-in slice.
 func (s *Slice[T]) SliceP() *[]T {
 	return &s.slice
 }
@@ -53,7 +53,7 @@ func (s *Slice[T]) Append(items ...T) {
 	s.slice = append(s.slice, items...)
 }
 
-// Removes all slice elements leaving a slice with length 0 and 0 elements.
+// Removes all slice elements leaving a slice with length 0 and 0 elements, but not nil.
 func (s *Slice[T]) Clear() {
 	s.slice = []T{}
 }
