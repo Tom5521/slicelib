@@ -34,7 +34,7 @@ func TestContains(t *testing.T) {
 }
 
 func TestRemoveDuplicates(t *testing.T) {
-	a := sliceutils.NewSlice(1, 2, 3)
+	a := sliceutils.NewSlice(1, 1, 2, 2, 3, 3)
 	b := []int{1, 2, 3}
 
 	a.RemoveDuplicates()

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"reflect"
 	"slices"
-	"strings"
 )
 
 func deepEqual[T any](t1 T) func(T) bool {
@@ -117,14 +116,15 @@ func (s Slice[T]) Contains(v T) bool {
 // Removes duplicates from the slice making all elements unique.
 func (s *Slice[T]) RemoveDuplicates() {
 	seen := make(map[any]bool)
-	j := 0
-	for i := 0; i < len(s.slice); i++ {
-		if !seen[(s.slice)[i]] {
-			seen[(s.slice)[i]] = true
-			(s.slice)[j] = (s.slice)[i]
+	var j int
+	for i, v := range s.slice {
+		if !seen[v] {
+			seen[v] = true
+			s.slice[j] = s.slice[i]
 			j++
 		}
 	}
+
 	s.slice = s.slice[:j]
 }
 
@@ -170,19 +170,18 @@ func (s *Slice[T]) Range(yield func(k int, v T) bool) {
 	}
 }
 
-func (s Slice[T]) String() string {
-	var b strings.Builder
-	b.WriteString("[")
+func (s Slice[T]) String() (txt string) {
+	txt = "["
 	s.Range(func(k int, v T) bool {
-		fmt.Fprintf(&b, " %v", v)
+		txt += fmt.Sprintf(" %v", v)
 		if k != s.Len()-1 {
-			b.WriteString(",")
+			txt += ","
 		}
 
 		return true
 	})
 
-	b.WriteString(" ]")
+	txt += " ]"
 
-	return b.String()
+	return
 }
