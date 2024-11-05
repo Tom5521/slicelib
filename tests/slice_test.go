@@ -9,8 +9,22 @@ import (
 func TestEqual(t *testing.T) {
 	a := sliceutils.NewSlice(1, 2, 3)
 	b := []int{1, 2, 3}
-
+	// Test Comparable.
 	if !a.Equal(b) {
+		t.Log("Fail on comparable")
+		t.Fail()
+	}
+
+	// Test Not comparable.
+	type str struct {
+		A1 int
+	}
+
+	c := sliceutils.NewSlice(str{1}, str{2}, str{3})
+	d := []str{{1}, {2}, {3}}
+
+	if !c.Equal(d) {
+		t.Log("Fail on non comparable")
 		t.Fail()
 	}
 }

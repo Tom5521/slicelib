@@ -110,6 +110,13 @@ func (s Slice[T]) Len() int {
 // Returns true if the slice contains the element,
 // comparing with slices.ContainsFunc and reflect.DeepEqual.
 func (s Slice[T]) Contains(v T) bool {
+	if reflect.TypeFor[T]().Comparable() {
+		for _, j := range s.slice {
+			if any(j) == any(v) {
+				return true
+			}
+		}
+	}
 	return slices.ContainsFunc(s.slice, deepEqual(v))
 }
 
@@ -130,6 +137,12 @@ func (s *Slice[T]) RemoveDuplicates() {
 
 // Returns a slices.EqualFunc compared with reflect.DeepEqual.
 func (s Slice[T]) Equal(v []T) bool {
+	if reflect.TypeFor[T]().Comparable() {
+		return slices.EqualFunc(s.slice, v, func(e1 T, e2 T) bool {
+			return any(e1) == any(e2)
+		})
+	}
+
 	return slices.EqualFunc(s.slice, v, deepEqual2[T])
 }
 
