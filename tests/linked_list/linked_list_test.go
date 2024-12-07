@@ -87,6 +87,11 @@ func TestAppend(t *testing.T) {
 	if !a.Equal(b) {
 		t.Fail()
 	}
+
+	c := slicelib.NewLinkedList[int]()
+	c.Append(1)
+	c.Append(2)
+	c.Append(3)
 }
 
 func TestReverse(t *testing.T) {
@@ -106,6 +111,17 @@ func TestSet(t *testing.T) {
 	b := []int{1, 2, 2}
 
 	a.Set(2, 2)
+
+	if !a.Equal(b) {
+		t.Fail()
+	}
+}
+
+func TestCutUntil(t *testing.T) {
+	a := slicelib.NewLinkedList(1, 2, 3)
+	b := []int{1, 2}
+
+	a.CutUntil(2)
 
 	if !a.Equal(b) {
 		t.Fail()

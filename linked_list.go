@@ -32,6 +32,9 @@ func (ll *LinkedList[T]) makeNodeChain(items ...T) (h, t *node[T], l int) {
 		items = items[1:]
 		h = cur
 	}
+	if l == 1 {
+		t = h
+	}
 
 	for i, item := range items {
 		newNode := &node[T]{
@@ -372,7 +375,22 @@ func (ll *LinkedList[T]) Insert(i int, values ...T) {
 // - CutFrom
 // - CutRange
 
-func (ll *LinkedList[T]) RemoveDuplicates() {}
+func (ll *LinkedList[T]) RemoveDuplicates() {
+	seen := make(map[any]bool)
+
+	var j int
+	ll.Range(func(i int, t T) bool {
+		if !seen[t] {
+			seen[t] = true
+			ll.Set(j, ll.At(i))
+			j++
+		}
+
+		return true
+	})
+
+	ll.CutUntil(j)
+}
 
 func (ll *LinkedList[T]) Reverse() {
 	var (
@@ -405,6 +423,19 @@ func (ll *LinkedList[T]) SortFunc(cmp func(a, b T) int) {
 }
 
 func (ll *LinkedList[T]) CutUntil(i int) {
+	if i <= 0 {
+		ll.Clear()
+		return
+	}
+
+	if i > ll.len {
+		return
+	}
+	n := ll.at(i)
+	n.previous.next = nil
+	ll.tail = n.previous
+
+	ll.len = i
 }
 func (ll *LinkedList[T]) CutFrom(i int)     {}
 func (ll *LinkedList[T]) CutRange(i, j int) {}
