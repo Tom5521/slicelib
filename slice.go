@@ -60,6 +60,10 @@ func (s *Slice[T]) Cap() int {
 	return cap(s.slice)
 }
 
+func (s *Slice[T]) Set(i int, v T) {
+	s.slice[i] = v
+}
+
 // Clear removes all elements from the slice,
 // leaving it with zero length but not nil.
 func (s *Slice[T]) Clear() {
@@ -93,6 +97,28 @@ func (s Slice[T]) Index(v T) int {
 	return slices.IndexFunc(s.slice, deepEqual(v))
 }
 
+func (s *Slice[T]) LastIndex(val T) int {
+	var i int = -1
+	if reflect.TypeFor[T]().Comparable() {
+		s.ReverseRange(func(ii int, t T) bool {
+			found := any(t) == any(val)
+			if found {
+				i = ii
+			}
+			return !found
+		})
+	} else {
+		s.Range(func(k int, v T) bool {
+			found := reflect.DeepEqual(val, v)
+			if found {
+				i = k
+			}
+			return !found
+		})
+	}
+	return i
+}
+
 // Insert adds one or more elements at the specified index.
 // Shifts existing elements to make room for the new elements.
 //
@@ -117,6 +143,10 @@ func (s *Slice[T]) Pop(index int) {
 // Uses the Index method to locate the element before removing it.
 func (s *Slice[T]) Remove(v T) {
 	s.Pop(s.Index(v))
+}
+
+func (s *Slice[T]) RemoveLast(v T) {
+	s.Pop(s.LastIndex(v))
 }
 
 // Reverse changes the order of elements in the slice to their reverse.
@@ -208,7 +238,17 @@ func (s *Slice[T]) Filter(f func(T) (pass bool)) {
 // The yield function receives the index and value, and can stop iteration by returning false.
 func (s *Slice[T]) Range(yield func(k int, v T) bool) {
 	for i, j := range s.slice {
-		yield(i, j)
+		if !yield(i, j) {
+			break
+		}
+	}
+}
+
+func (s *Slice[T]) ReverseRange(f func(int, T) bool) {
+	for i := len(s.slice) - 1; i >= 0; i-- {
+		if !f(i, s.slice[i]) {
+			break
+		}
 	}
 }
 
@@ -242,4 +282,23 @@ func (s *Slice[T]) EqualSlicer(v Slicer[T]) bool {
 		return s.EqualSlicerFunc(v, comparableEqual2[T])
 	}
 	return s.EqualSlicerFunc(v, deepEqual2[T])
+}
+
+// Is equal to slice[:x]
+func (s *Slice[T]) CutUntil(i int) {
+	s.slice = s.slice[:i]
+}
+
+// Is equal to slice[x:]
+func (s *Slice[T]) CutFrom(i int) {
+	s.slice = s.slice[i:]
+}
+
+// Is equal to slice[x:y]
+func (s *Slice[T]) CutRange(i, j int) {
+	s.slice = s.slice[i:j]
+}
+
+func (s *Slice[T]) InRange(i int) bool {
+	return i >= 0 && i < len(s.slice)
 }

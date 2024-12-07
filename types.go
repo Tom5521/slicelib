@@ -6,11 +6,14 @@ type Slicer[T any] interface {
 	Append(...T)
 	Len() int
 	Remove(T)
+	RemoveLast(T)
 	Pop(int)
 	Delete(int, int)
 	String() string
 	Range(func(int, T) bool)
+	ReverseRange(func(int, T) bool)
 	Index(T) int
+	LastIndex(T) int
 	Contains(T) bool
 	Clear()
 	Insert(int, ...T)
@@ -22,6 +25,11 @@ type Slicer[T any] interface {
 	EqualFunc([]T, func(T, T) bool) bool
 	EqualSlicerFunc(Slicer[T], func(T, T) bool) bool
 	SortFunc(func(T, T) int)
+	CutUntil(int)
+	CutFrom(int)
+	CutRange(int, int)
+	Set(int, T)
+	InRange(int) bool
 }
 
 type FullSlicer[T any] interface {

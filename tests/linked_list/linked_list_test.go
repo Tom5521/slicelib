@@ -68,3 +68,15 @@ func TestDelete(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestReverse(t *testing.T) {
+	a := slicelib.NewLinkedList(1, 2, 3)
+	b := []int{3, 2, 1}
+
+	a.Reverse()
+
+	if !a.Equal(b) {
+		t.Log(a)
+		t.Fail()
+	}
+}
