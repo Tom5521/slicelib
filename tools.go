@@ -41,3 +41,7 @@ func makeString[T any](yield func(func(k int, v T) bool), size int) (txt string)
 
 	return
 }
+
+func outOfRangePanic(i, l int) {
+	panic(fmt.Sprintf("runtime error: index out of range [%v] with length %v", i, l))
+}

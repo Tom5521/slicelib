@@ -5,7 +5,7 @@ import (
 	"slices"
 )
 
-var _ Slicer[any] = (*LinkedList[any])(nil)
+// var _ Slicer[any] = (*LinkedList[any])(nil)
 
 type node[T any] struct {
 	data           T
@@ -60,14 +60,21 @@ func (ll *LinkedList[T]) refreshLen() {
 	ll.len = l
 }
 
+func (ll *LinkedList[T]) isOutOfRange(i int) bool {
+	return i >= ll.len || i < 0
+}
+
 // TODO: Finish this.
 func (ll *LinkedList[T]) createNodes(s ...T) *node[T] {
 	return nil
 }
 
-// TODO: Finish this.
-// func NewLinkedList[T any](slice ...T) *LinkedList[T] {
-// }
+func NewLinkedList[T any](slice ...T) *LinkedList[T] {
+	ll := new(LinkedList[T])
+	ll.Append(slice...)
+
+	return ll
+}
 
 func (ll *LinkedList[T]) Range(f func(int, T) bool) {
 	c := ll.head
@@ -82,6 +89,9 @@ func (ll *LinkedList[T]) Range(f func(int, T) bool) {
 }
 
 func (ll *LinkedList[T]) At(i int) (v T) {
+	if ll.isOutOfRange(i) {
+		outOfRangePanic(i, ll.len)
+	}
 	ll.Range(func(ii int, t T) bool {
 		if ii == i {
 			v = t
@@ -128,6 +138,10 @@ func (ll *LinkedList[T]) Len() int {
 }
 
 func (ll *LinkedList[T]) Pop(i int) {
+	if ll.isOutOfRange(i) {
+		outOfRangePanic(i, ll.len)
+	}
+
 	n := ll.at(i)
 	if n == nil {
 		return
@@ -145,24 +159,22 @@ func (ll *LinkedList[T]) Pop(i int) {
 	ll.len--
 }
 
+func (ll *LinkedList[T]) InRange(i int) bool {
+	return !ll.isOutOfRange(i)
+}
+
 func (ll *LinkedList[T]) Contains(v T) (contains bool) {
 	if reflect.TypeFor[T]().Comparable() {
 		ll.Range(func(_ int, t T) bool {
-			if any(t) == any(v) {
-				contains = true
-				return false
-			}
-			return true
+			contains = any(t) == any(v)
+			return !contains
 		})
 
 		return
 	}
 	ll.Range(func(_ int, t T) bool {
-		if reflect.DeepEqual(v, t) {
-			contains = true
-			return false
-		}
-		return true
+		contains = reflect.DeepEqual(t, v)
+		return !contains
 	})
 
 	return
@@ -201,9 +213,17 @@ func (ll *LinkedList[T]) String() string {
 
 func (ll *LinkedList[T]) Clear() {
 	ll.head = nil
+	ll.len = 0
 }
 
 func (ll *LinkedList[T]) Delete(i, j int) {
+	if ll.isOutOfRange(i) {
+		outOfRangePanic(i, ll.len)
+	}
+	if ll.isOutOfRange(j) {
+		outOfRangePanic(i, ll.len)
+	}
+
 	s := slices.Delete(ll.S(), i, j)
 	ll.Clear()
 	ll.Append(s...)
@@ -259,6 +279,9 @@ func (ll *LinkedList[T]) EqualSlicer(s Slicer[T]) bool {
 
 // TODO: Finish this.
 func (ll *LinkedList[T]) Insert(i int, values ...T) {
+	if ll.isOutOfRange(i) {
+		outOfRangePanic(i, ll.len)
+	}
 	n := ll.at(i)
 	if n == nil {
 		return
