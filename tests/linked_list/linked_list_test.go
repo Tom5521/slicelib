@@ -185,3 +185,17 @@ func TestInsert(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestFilter(t *testing.T) {
+	a := slicelib.NewLinkedList[any](1, "Meow", 3.1, "22", '1')
+	b := []any{"Meow", "22"}
+
+	a.Filter(func(t any) (pass bool) {
+		_, ok := t.(string)
+		return ok
+	})
+
+	if !a.Equal(b) {
+		t.Fail()
+	}
+}

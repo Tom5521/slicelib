@@ -30,8 +30,5 @@ type Slicer[T any] interface {
 	SliceRange(int, int) // [x:y]
 	Set(int, T)
 	InRange(int) bool
-}
-
-type FullSlicer[T any] interface {
-	Slicer[T]
+	Filter(func(T) bool)
 }

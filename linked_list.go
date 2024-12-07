@@ -5,8 +5,6 @@ import (
 	"slices"
 )
 
-// Package slicelib provides a generic implementation of a doubly-linked list.
-
 // node represents an individual element in the LinkedList.
 // It stores the data and maintains links to previous and next nodes.
 type node[T any] struct {
@@ -57,7 +55,7 @@ func (ll *LinkedList[T]) makeNodeChain(items ...T) (h, t *node[T], l int) {
 //
 // f is a function that receives the current index and node.
 // Returns false from f to stop iteration.
-func (ll *LinkedList[T]) iter(f func(i int, n *node[T]) bool) {
+func (ll LinkedList[T]) iter(f func(i int, n *node[T]) bool) {
 	for i, c := 0, ll.head; c != nil; i, c = i+1, c.next {
 		if !f(i, c) {
 			break
@@ -65,7 +63,7 @@ func (ll *LinkedList[T]) iter(f func(i int, n *node[T]) bool) {
 	}
 }
 
-func (ll *LinkedList[T]) reverseIter(f func(i int, n *node[T]) bool) {
+func (ll LinkedList[T]) reverseIter(f func(i int, n *node[T]) bool) {
 	for i, c := ll.len-1, ll.tail; c != nil; i, c = i-1, c.previous {
 		if !f(i, c) {
 			break
@@ -487,4 +485,19 @@ func (ll *LinkedList[T]) Clone() *LinkedList[T] {
 	})
 
 	return n
+}
+
+func (ll *LinkedList[T]) Filter(f func(t T) (pass bool)) {
+	orgLen := ll.len
+
+	ll.Range(func(i int, t T) bool {
+		if f(t) {
+			ll.Append(t)
+		}
+		if i == orgLen-1 {
+			return false
+		}
+		return true
+	})
+	ll.SliceLeft(orgLen)
 }
