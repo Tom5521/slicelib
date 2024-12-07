@@ -1,5 +1,5 @@
 test:
-    go test -v ./tests/*
+    go test -tags test -v ./tests/*
 gh-release tag:
     git tag {{tag}}
     git push --tags

@@ -5,8 +5,6 @@ import (
 	"slices"
 )
 
-// var _ Slicer[any] = (*LinkedList[any])(nil)
-
 type node[T any] struct {
 	data           T
 	previous, next *node[T]

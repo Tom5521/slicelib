@@ -5,8 +5,6 @@ import (
 	"slices"
 )
 
-// var _ Slicer[any] = (*Slice[any])(nil)
-
 type Slice[T any] struct {
 	slice []T
 }
