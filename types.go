@@ -21,7 +21,7 @@ type Slicer[T any] interface {
 	EqualSlicer(Slicer[T]) bool
 	EqualFunc([]T, func(T, T) bool) bool
 	EqualSlicerFunc(Slicer[T], func(T, T) bool) bool
-	SortFunc(func(T, T))
+	SortFunc(func(T, T) int)
 }
 
 type FullSlicer[T any] interface {
