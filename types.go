@@ -25,9 +25,9 @@ type Slicer[T any] interface {
 	EqualFunc([]T, func(T, T) bool) bool
 	EqualSlicerFunc(Slicer[T], func(T, T) bool) bool
 	SortFunc(func(T, T) int)
-	CutUntil(int)
-	CutFrom(int)
-	CutRange(int, int)
+	SliceRight(int)      // [:x]
+	SliceLeft(int)       // [x:]
+	SliceRange(int, int) // [x:y]
 	Set(int, T)
 	InRange(int) bool
 }

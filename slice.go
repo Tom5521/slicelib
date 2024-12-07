@@ -285,17 +285,17 @@ func (s *Slice[T]) EqualSlicer(v Slicer[T]) bool {
 }
 
 // Is equal to slice[:x]
-func (s *Slice[T]) CutUntil(i int) {
+func (s *Slice[T]) SliceRight(i int) {
 	s.slice = s.slice[:i]
 }
 
 // Is equal to slice[x:]
-func (s *Slice[T]) CutFrom(i int) {
+func (s *Slice[T]) SliceLeft(i int) {
 	s.slice = s.slice[i:]
 }
 
 // Is equal to slice[x:y]
-func (s *Slice[T]) CutRange(i, j int) {
+func (s *Slice[T]) SliceRange(i, j int) {
 	s.slice = s.slice[i:j]
 }
 

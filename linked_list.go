@@ -298,17 +298,36 @@ func (ll *LinkedList[T]) Clear() {
 // Delete removes elements between indices i and j.
 // Panics if either index is out of range.
 func (ll *LinkedList[T]) Delete(i, j int) {
-	if !ll.InRange(i) {
-		outOfRangePanic(i, ll.len)
-	}
-	if !ll.InRange(j) {
-		outOfRangePanic(i, ll.len)
+	if j == ll.len && i == 0 {
+		ll.Clear()
+		return
 	}
 
-	s := slices.Delete(ll.S(), i, j)
-	ll.Clear()
-	ll.Append(s...)
-	ll.refreshLen()
+	if j == ll.len {
+		start := ll.at(i)
+		prev := start.previous
+
+		if prev != nil {
+			prev.next = nil
+		} else {
+			start.next = nil
+		}
+
+		ll.len -= j - i
+		return
+	}
+
+	start := ll.at(i)
+	end := ll.at(j)
+
+	if start.previous != nil {
+		start.previous.next = end
+	}
+	if end.previous != nil {
+		end.previous = start.previous
+	}
+
+	ll.len -= j - i
 }
 
 // Equal compares the list with a slice for equality.
@@ -325,6 +344,9 @@ func (ll *LinkedList[T]) Equal(s []T) bool {
 func (ll *LinkedList[T]) EqualFunc(s []T, f func(T, T) bool) (eq bool) {
 	if len(s) != ll.Len() || cap(s) != len(s) {
 		return false
+	}
+	if len(s) == 0 && ll.len == 0 {
+		return true
 	}
 
 	ll.Range(func(i int, t T) bool {
@@ -355,25 +377,24 @@ func (ll *LinkedList[T]) IsEmpty() bool {
 }
 
 // Insert is a placeholder for future implementation of inserting elements at a specific index.
-// Currently not fully implemented.
 func (ll *LinkedList[T]) Insert(i int, values ...T) {
-	if !ll.InRange(i) {
-		outOfRangePanic(i, ll.len)
-	}
-	n := ll.at(i)
-	if n == nil {
-		return
-	}
-	// TODO: Implement insertion logic
-}
+	cur := ll.at(i)
+	next := cur.next
 
-// TODO: Implement methods for:
-// - RemoveDuplicates
-// - Reverse
-// - SortFunc
-// - CutUntil
-// - CutFrom
-// - CutRange
+	h, t, l := ll.makeNodeChain(values...)
+
+	cur.next = h
+	h.previous = cur
+
+	if next != nil {
+		t.next = next
+		next.previous = t
+	} else {
+		ll.tail = t
+	}
+
+	ll.len += l
+}
 
 func (ll *LinkedList[T]) RemoveDuplicates() {
 	seen := make(map[any]bool)
@@ -389,7 +410,7 @@ func (ll *LinkedList[T]) RemoveDuplicates() {
 		return true
 	})
 
-	ll.CutUntil(j)
+	ll.SliceRight(j)
 }
 
 func (ll *LinkedList[T]) Reverse() {
@@ -422,20 +443,48 @@ func (ll *LinkedList[T]) SortFunc(cmp func(a, b T) int) {
 	ll.Append(slice...)
 }
 
-func (ll *LinkedList[T]) CutUntil(i int) {
-	if i <= 0 {
+func (ll *LinkedList[T]) SliceLeft(index int) {
+	switch {
+	case index <= 0:
+		return
+	case index == ll.len:
 		ll.Clear()
 		return
 	}
 
-	if i > ll.len {
+	n := ll.at(index)
+	n.next.previous = nil
+	ll.head = n
+	ll.len -= index
+}
+
+func (ll *LinkedList[T]) SliceRight(index int) {
+	switch {
+	case index <= 0:
+		ll.Clear()
+		return
+	case index == ll.len:
 		return
 	}
-	n := ll.at(i)
+
+	n := ll.at(index)
 	n.previous.next = nil
 	ll.tail = n.previous
-
-	ll.len = i
+	ll.len = index
 }
-func (ll *LinkedList[T]) CutFrom(i int)     {}
-func (ll *LinkedList[T]) CutRange(i, j int) {}
+
+func (ll *LinkedList[T]) SliceRange(i, j int) {
+	ll.SliceRight(j)
+	ll.SliceLeft(i)
+}
+
+func (ll *LinkedList[T]) Clone() *LinkedList[T] {
+	n := NewLinkedList[T]()
+
+	ll.Range(func(_ int, t T) bool {
+		n.Append(t)
+		return true
+	})
+
+	return n
+}

@@ -68,10 +68,10 @@ func TestClear(t *testing.T) {
 }
 
 func TestDelete(t *testing.T) {
-	a := slicelib.NewLinkedList(1, 2, 3)
-	b := []int{1, 3}
+	a := slicelib.NewLinkedList(1, 2, 3, 4, 5, 6, 7, 8)
+	b := []int{1, 6, 7, 8}
 
-	a.Delete(1, 2)
+	a.Delete(1, 5)
 
 	if !a.Equal(b) {
 		t.Fail()
@@ -117,11 +117,69 @@ func TestSet(t *testing.T) {
 	}
 }
 
-func TestCutUntil(t *testing.T) {
-	a := slicelib.NewLinkedList(1, 2, 3)
+func TestSliceLeft(t *testing.T) {
+	a := slicelib.NewLinkedList(1, 2, 3, 4)
+	b := []int{3, 4}
+
+	a.SliceLeft(2)
+
+	if !a.Equal(b) {
+		t.Fail()
+	}
+
+	c := slicelib.NewLinkedList(1, 2, 3, 4)
+	d := []int{}
+
+	c.SliceLeft(4)
+	if !c.Equal(d) {
+		t.Fail()
+	}
+}
+
+func TestSliceRight(t *testing.T) {
+	a := slicelib.NewLinkedList(1, 2, 3, 4)
 	b := []int{1, 2}
 
-	a.CutUntil(2)
+	a.SliceRight(2)
+
+	if !a.Equal(b) {
+		t.Log(a)
+		t.Fail()
+	}
+}
+
+func TestSliceRange(t *testing.T) {
+	a := slicelib.NewLinkedList(1, 2, 3, 4)
+	b := []int{2, 3}
+
+	a.SliceRange(1, 3)
+
+	if !a.Equal(b) {
+		t.Fail()
+	}
+}
+
+func TestRemoveDuplicates(t *testing.T) {
+	a := slicelib.NewLinkedList(1, 1, 2, 2, 3, 3, 4, 4)
+	b := []int{1, 2, 3, 4}
+
+	a.RemoveDuplicates()
+
+	if !a.Equal(b) {
+		t.Fail()
+	}
+}
+
+func TestInsert(t *testing.T) {
+	a := slicelib.NewLinkedList(1, 2, 3)
+	b := []int{1, 2, 3, 4, 5}
+
+	a.Insert(
+		2, // Index
+		// Values...
+		4,
+		5,
+	)
 
 	if !a.Equal(b) {
 		t.Fail()
