@@ -1,20 +1,11 @@
 package slicelib
 
 import (
-	"fmt"
 	"reflect"
 	"slices"
 )
 
-func deepEqual[T any](t1 T) func(T) bool {
-	return func(t T) bool {
-		return reflect.DeepEqual(t1, t)
-	}
-}
-
-func deepEqual2[T any](t1, t2 T) bool {
-	return reflect.DeepEqual(t1, t2)
-}
+var _ Slicer[any] = (*Slice[any])(nil)
 
 type Slice[T any] struct {
 	slice []T
@@ -52,6 +43,10 @@ func (s *Slice[T]) Append(items ...T) {
 	s.slice = append(s.slice, items...)
 }
 
+func (s *Slice[T]) Cap() int {
+	return cap(s.slice)
+}
+
 // Removes all slice elements leaving a slice with length 0 and 0 elements, but not nil.
 func (s *Slice[T]) Clear() {
 	s.slice = []T{}
@@ -60,8 +55,12 @@ func (s *Slice[T]) Clear() {
 // Creates a copy of the current object, which is not the same as the current object.
 //
 // implements the slices.Clone function on the internal slice to create the new structure.
-func (s Slice[T]) Copy() Slice[T] {
+func (s Slice[T]) Clone() Slice[T] {
 	return NewSlice(slices.Clone(s.slice)...)
+}
+
+func (s Slice[T]) CloneS() []T {
+	return slices.Clone(s.slice)
 }
 
 // Performs a slices.IndexFunc comparing it with reflect.DeepEqual on the internal slice,
@@ -69,6 +68,9 @@ func (s Slice[T]) Copy() Slice[T] {
 //
 // Returns the first occurrence of the supplied element.
 func (s Slice[T]) Index(v T) int {
+	if reflect.TypeFor[T]().Comparable() {
+		return slices.IndexFunc(s.slice, comparableEqual(v))
+	}
 	return slices.IndexFunc(s.slice, deepEqual(v))
 }
 
@@ -111,11 +113,7 @@ func (s Slice[T]) Len() int {
 // comparing with slices.ContainsFunc and reflect.DeepEqual.
 func (s Slice[T]) Contains(v T) bool {
 	if reflect.TypeFor[T]().Comparable() {
-		for _, j := range s.slice {
-			if any(j) == any(v) {
-				return true
-			}
-		}
+		return slices.ContainsFunc(s.slice, comparableEqual(v))
 	}
 	return slices.ContainsFunc(s.slice, deepEqual(v))
 }
@@ -135,12 +133,10 @@ func (s *Slice[T]) RemoveDuplicates() {
 	s.slice = s.slice[:j]
 }
 
-// Returns a slices.EqualFunc compared with reflect.DeepEqual.
+// Returns a slices.EqualFunc compared with reflect.DeepEqual if the type isn't comparable.
 func (s Slice[T]) Equal(v []T) bool {
 	if reflect.TypeFor[T]().Comparable() {
-		return slices.EqualFunc(s.slice, v, func(e1 T, e2 T) bool {
-			return any(e1) == any(e2)
-		})
+		return slices.EqualFunc(s.slice, v, comparableEqual2[T])
 	}
 
 	return slices.EqualFunc(s.slice, v, deepEqual2[T])
@@ -165,7 +161,7 @@ func (s *Slice[T]) SortFunc(f func(a, b T) int) {
 }
 
 // Delete all elements that do not match the logic of the function.
-func (s *Slice[T]) Filter(f func(T) bool) {
+func (s *Slice[T]) Filter(f func(T) (pass bool)) {
 	var newSlice []T
 	for _, i := range s.slice {
 		if f(i) {
@@ -183,18 +179,14 @@ func (s *Slice[T]) Range(yield func(k int, v T) bool) {
 	}
 }
 
-func (s Slice[T]) String() (txt string) {
-	txt = "["
-	s.Range(func(k int, v T) bool {
-		txt += fmt.Sprintf(" %v", v)
-		if k != s.Len()-1 {
-			txt += ","
-		}
+func (s Slice[T]) String() string {
+	return makeString(s.Range, s.Len())
+}
 
-		return true
-	})
+func (s *Slice[T]) Grow(newSize int) {
+	s.slice = slices.Grow(s.slice, newSize)
+}
 
-	txt += " ]"
-
-	return
+func (s *Slice[T]) Clip() {
+	s.slice = slices.Clip(s.slice)
 }

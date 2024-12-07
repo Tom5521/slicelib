@@ -126,7 +126,7 @@ func TestFilter(t *testing.T) {
 func TestCopy(t *testing.T) {
 	a := sliceutils.NewSlice(1, 2, 3)
 
-	if !a.Equal(a.Copy().S()) {
+	if !a.Equal(a.Clone().S()) {
 		t.Fail()
 	}
 }
@@ -136,6 +136,25 @@ func TestString(t *testing.T) {
 	expected := "[ 1, 2, 3 ]"
 
 	if a.String() != expected {
+		t.Fail()
+	}
+}
+
+func TestGrow(t *testing.T) {
+	a := sliceutils.NewSlice(1, 2, 3)
+	a.Grow(2)
+
+	if a.Cap() != 6 {
+		t.Fail()
+	}
+}
+
+func TestClip(t *testing.T) {
+	a := sliceutils.NewSlice(1, 2, 3)
+	a.Grow(3)
+
+	a.Clip()
+	if a.Cap() != 3 {
 		t.Fail()
 	}
 }

@@ -21,7 +21,6 @@ func (s *OrderedSlice[T]) Sort() {
 }
 
 // Creates a copy of the current object, which is not the same as the current object.
-//
 // implements the slices.Clone function on the internal slice to create the new structure.
 func (s OrderedSlice[T]) Copy() OrderedSlice[T] {
 	return NewOrderedSlice(slices.Clone(s.slice)...)
