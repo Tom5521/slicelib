@@ -6,6 +6,15 @@ import (
 	"github.com/Tom5521/slicelib"
 )
 
+func TestCreate(t *testing.T) {
+	a := slicelib.NewLinkedList(3, 2, 1)
+	b := []int{3, 2, 1}
+
+	if !a.Equal(b) {
+		t.Fail()
+	}
+}
+
 func TestLen(t *testing.T) {
 	a := slicelib.NewLinkedList(1, 2, 3)
 
@@ -69,6 +78,17 @@ func TestDelete(t *testing.T) {
 	}
 }
 
+func TestAppend(t *testing.T) {
+	a := slicelib.NewLinkedList(1, 2, 3)
+	b := []int{1, 2, 3, 4, 5, 6}
+
+	a.Append(4, 5, 6)
+
+	if !a.Equal(b) {
+		t.Fail()
+	}
+}
+
 func TestReverse(t *testing.T) {
 	a := slicelib.NewLinkedList(1, 2, 3)
 	b := []int{3, 2, 1}
@@ -77,6 +97,17 @@ func TestReverse(t *testing.T) {
 
 	if !a.Equal(b) {
 		t.Log(a)
+		t.Fail()
+	}
+}
+
+func TestSet(t *testing.T) {
+	a := slicelib.NewLinkedList(1, 2, 3)
+	b := []int{1, 2, 2}
+
+	a.Set(2, 2)
+
+	if !a.Equal(b) {
 		t.Fail()
 	}
 }

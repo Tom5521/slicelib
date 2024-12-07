@@ -22,34 +22,51 @@ type LinkedList[T any] struct {
 	len  int      // Total number of elements in the list
 }
 
+func (ll *LinkedList[T]) makeNodeChain(items ...T) (h, t *node[T], l int) {
+	l = len(items)
+	var cur *node[T]
+	if l > 0 {
+		cur = &node[T]{
+			data: items[0],
+		}
+		items = items[1:]
+		h = cur
+	}
+
+	for i, item := range items {
+		newNode := &node[T]{
+			previous: cur,
+			data:     item,
+		}
+		cur.next = newNode
+		cur = newNode
+
+		if i == len(items)-1 {
+			t = newNode
+		}
+	}
+
+	return
+}
+
 // iter is an internal iterator method that traverses the list.
 // Allows performing operations on each node with the ability to stop iteration.
 //
 // f is a function that receives the current index and node.
 // Returns false from f to stop iteration.
 func (ll *LinkedList[T]) iter(f func(i int, n *node[T]) bool) {
-	c := ll.head
-	var index int
-	for c != nil {
-		if !f(index, c) {
+	for i, c := 0, ll.head; c != nil; i, c = i+1, c.next {
+		if !f(i, c) {
 			break
 		}
-
-		c = c.next
-		index++
 	}
 }
 
 func (ll *LinkedList[T]) reverseIter(f func(i int, n *node[T]) bool) {
-	c := ll.tail
-	index := ll.len - 1
-	for c != nil {
-		if !f(index, c) {
+	for i, c := ll.len-1, ll.tail; c != nil; i, c = i-1, c.previous {
+		if !f(i, c) {
 			break
 		}
-
-		c = c.previous
-		index--
 	}
 }
 
@@ -63,12 +80,21 @@ func (ll *LinkedList[T]) last() *node[T] {
 	return c
 }
 
+func (ll *LinkedList[T]) first() *node[T] {
+	c := ll.tail
+	for c != nil {
+		c = c.previous
+	}
+	return c
+}
+
 // at retrieves the node at a specific index.
 // Returns nil if the index is out of range.
 func (ll *LinkedList[T]) at(i int) (n *node[T]) {
-	if ll.isOutOfRange(i) {
+	if !ll.InRange(i) {
 		outOfRangePanic(i, ll.len)
 	}
+
 	yield := func(ii int, nn *node[T]) bool {
 		found := ii == i
 		if found {
@@ -96,11 +122,6 @@ func (ll *LinkedList[T]) refreshLen() {
 	})
 
 	ll.len = l
-}
-
-// isOutOfRange checks if a given index is outside the list's bounds.
-func (ll *LinkedList[T]) isOutOfRange(i int) bool {
-	return i >= ll.len || i < 0
 }
 
 func (ll *LinkedList[T]) index(rangeFunc func(func(int, *node[T]) bool), val T) (index int) {
@@ -173,28 +194,16 @@ func (ll *LinkedList[T]) S() (slice []T) {
 
 // Append adds one or more elements to the end of the list.
 func (ll *LinkedList[T]) Append(s ...T) {
-	current := ll.last()
-	if current == nil && len(s) > 0 {
-		ll.head = &node[T]{
-			data: s[0],
-		}
-		ll.len++
-		current = ll.head
-		s = s[1:]
-	}
-
-	for i, value := range s {
-		newNode := &node[T]{
-			previous: current,
-			data:     value,
-		}
-		current.next = newNode
-		current = newNode
-		ll.len++
-
-		if i == len(s)-1 {
-			ll.tail = newNode
-		}
+	head, tail, length := ll.makeNodeChain(s...)
+	if ll.head == nil {
+		ll.head = head
+		ll.tail = tail
+		ll.len = length
+	} else if length > 0 {
+		head.previous = ll.tail
+		ll.tail.next = head
+		ll.tail = tail
+		ll.len += length
 	}
 }
 
@@ -227,7 +236,7 @@ func (ll *LinkedList[T]) Pop(i int) {
 
 // InRange checks if the given index is within the list's bounds.
 func (ll *LinkedList[T]) InRange(i int) bool {
-	return !ll.isOutOfRange(i)
+	return i >= 0 && i < ll.len
 }
 
 // Contains checks if the list includes a specific value.
@@ -286,10 +295,10 @@ func (ll *LinkedList[T]) Clear() {
 // Delete removes elements between indices i and j.
 // Panics if either index is out of range.
 func (ll *LinkedList[T]) Delete(i, j int) {
-	if ll.isOutOfRange(i) {
+	if !ll.InRange(i) {
 		outOfRangePanic(i, ll.len)
 	}
-	if ll.isOutOfRange(j) {
+	if !ll.InRange(j) {
 		outOfRangePanic(i, ll.len)
 	}
 
@@ -325,7 +334,7 @@ func (ll *LinkedList[T]) EqualFunc(s []T, f func(T, T) bool) (eq bool) {
 
 // EqualSlicerFunc compares the list with another Slicer using a custom function.
 func (ll *LinkedList[T]) EqualSlicerFunc(s Slicer[T], f func(T, T) bool) bool {
-	return equalSlicersFunc[T](ll, s, f)
+	return equalSlicersFunc(ll, s, f)
 }
 
 // EqualSlicer compares the list with another Slicer.
@@ -345,7 +354,7 @@ func (ll *LinkedList[T]) IsEmpty() bool {
 // Insert is a placeholder for future implementation of inserting elements at a specific index.
 // Currently not fully implemented.
 func (ll *LinkedList[T]) Insert(i int, values ...T) {
-	if ll.isOutOfRange(i) {
+	if !ll.InRange(i) {
 		outOfRangePanic(i, ll.len)
 	}
 	n := ll.at(i)
@@ -366,15 +375,22 @@ func (ll *LinkedList[T]) Insert(i int, values ...T) {
 func (ll *LinkedList[T]) RemoveDuplicates() {}
 
 func (ll *LinkedList[T]) Reverse() {
-	// if ll.len <= 1 {
-	// 	return
-	// }
-	//
-	// var prev, next *node[T]
-	// current := ll.head
-	//
-	// ll.iter(func(i int, n *node[T]) bool {
-	// })
+	var (
+		prev *node[T]
+		next *node[T]
+	)
+
+	curr := ll.head
+
+	for curr != nil {
+		next = curr.next
+		curr.next = prev
+		prev = curr
+		curr = next
+	}
+
+	ll.head = prev
+	ll.tail = next
 }
 
 func (ll *LinkedList[T]) Set(i int, v T) {
@@ -387,6 +403,8 @@ func (ll *LinkedList[T]) SortFunc(cmp func(a, b T) int) {
 	ll.Clear()
 	ll.Append(slice...)
 }
-func (ll *LinkedList[T]) CutUntil(int)      {}
-func (ll *LinkedList[T]) CutFrom(int)       {}
-func (ll *LinkedList[T]) CutRange(int, int) {}
+
+func (ll *LinkedList[T]) CutUntil(i int) {
+}
+func (ll *LinkedList[T]) CutFrom(i int)     {}
+func (ll *LinkedList[T]) CutRange(i, j int) {}

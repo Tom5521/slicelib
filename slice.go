@@ -98,7 +98,7 @@ func (s Slice[T]) Index(v T) int {
 }
 
 func (s *Slice[T]) LastIndex(val T) int {
-	var i int = -1
+	i := -1
 	if reflect.TypeFor[T]().Comparable() {
 		s.ReverseRange(func(ii int, t T) bool {
 			found := any(t) == any(val)
@@ -272,7 +272,7 @@ func (s *Slice[T]) Clip() {
 
 // EqualSlicerFunc compares the current slice with another Slicer using a custom comparison function.
 func (s *Slice[T]) EqualSlicerFunc(v Slicer[T], f func(T, T) bool) bool {
-	return equalSlicersFunc[T](s, v, f)
+	return equalSlicersFunc(s, v, f)
 }
 
 // EqualSlicer compares the current slice with another Slicer.
