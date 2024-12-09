@@ -18,8 +18,8 @@ type Slice[T any] struct {
 //
 //	intSlice := NewSlice(1, 2, 3)
 //	stringSlice := NewSlice("a", "b", "c")
-func NewSlice[T any](slice ...T) Slice[T] {
-	return Slice[T]{slice}
+func NewSlice[T any](slice ...T) *Slice[T] {
+	return &Slice[T]{slice}
 }
 
 // Elem returns the element at the specified index.
@@ -74,7 +74,7 @@ func (s *Slice[T]) Clear() {
 // Uses slices.Clone to create a new slice with the same elements.
 //
 // Returns a new Slice instance with copied elements.
-func (s Slice[T]) Clone() Slice[T] {
+func (s Slice[T]) Clone() *Slice[T] {
 	return NewSlice(slices.Clone(s.slice)...)
 }
 

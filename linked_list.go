@@ -125,10 +125,10 @@ func (ll *LinkedList[T]) refreshLen() {
 	ll.len = l
 }
 
-func (ll *LinkedList[T]) index(rangeFunc func(func(int, *node[T]) bool), val T) (index int) {
+func (ll *LinkedList[T]) index(iter func(func(int, *node[T]) bool), val T) (index int) {
 	index = -1
 	if reflect.TypeFor[T]().Comparable() {
-		rangeFunc(func(i int, n *node[T]) bool {
+		iter(func(i int, n *node[T]) bool {
 			if any(n.data) == any(val) {
 				index = i
 				return false
@@ -138,7 +138,7 @@ func (ll *LinkedList[T]) index(rangeFunc func(func(int, *node[T]) bool), val T) 
 		return
 	}
 
-	rangeFunc(func(i int, n *node[T]) bool {
+	iter(func(i int, n *node[T]) bool {
 		if reflect.DeepEqual(val, n.data) {
 			index = i
 			return false

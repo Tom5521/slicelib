@@ -5,19 +5,19 @@ import (
 )
 
 type ComparableSlice[T comparable] struct {
-	Slice[T]
+	*Slice[T]
 }
 
 // Creates a new object of ComparableSlice wich only implements
 // the comparable interface.
-func NewComparableSlice[T comparable](slice ...T) ComparableSlice[T] {
-	return ComparableSlice[T]{NewSlice(slice...)}
+func NewComparableSlice[T comparable](slice ...T) *ComparableSlice[T] {
+	return &ComparableSlice[T]{NewSlice(slice...)}
 }
 
 // Creates a copy of the current object, which is not the same as the current object.
 //
 // implements the slices.Clone function on the internal slice to create the new structure.
-func (s ComparableSlice[T]) Clone() ComparableSlice[T] {
+func (s ComparableSlice[T]) Clone() *ComparableSlice[T] {
 	return NewComparableSlice(slices.Clone(s.slice)...)
 }
 
