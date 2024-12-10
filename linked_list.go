@@ -376,19 +376,32 @@ func (ll *LinkedList[T]) IsEmpty() bool {
 
 // Insert is a placeholder for future implementation of inserting elements at a specific index.
 func (ll *LinkedList[T]) Insert(i int, values ...T) {
-	cur := ll.at(i)
-	next := cur.next
+	var l int
+	var h, t *node[T]
+	if i == ll.len {
+		h, t, l = ll.makeNodeChain(values...)
 
-	h, t, l := ll.makeNodeChain(values...)
-
-	cur.next = h
-	h.previous = cur
-
-	if next != nil {
-		t.next = next
-		next.previous = t
-	} else {
+		h.previous = ll.tail
+		ll.tail.next = h
 		ll.tail = t
+	} else if ll.len == 0 && i == 0 {
+		ll.Append(values...)
+		return
+	} else {
+		cur := ll.at(i)
+		next := cur.next
+
+		h, t, l = ll.makeNodeChain(values...)
+
+		cur.next = h
+		h.previous = cur
+
+		if next != nil {
+			t.next = next
+			next.previous = t
+		} else {
+			ll.tail = t
+		}
 	}
 
 	ll.len += l

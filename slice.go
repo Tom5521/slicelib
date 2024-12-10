@@ -19,7 +19,7 @@ type Slice[T any] struct {
 //	intSlice := NewSlice(1, 2, 3)
 //	stringSlice := NewSlice("a", "b", "c")
 func NewSlice[T any](slice ...T) *Slice[T] {
-	return &Slice[T]{slice}
+	return &Slice[T]{slices.Clone(slice)}
 }
 
 // Elem returns the element at the specified index.

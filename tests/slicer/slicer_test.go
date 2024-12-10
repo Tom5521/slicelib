@@ -6,25 +6,24 @@ import (
 	"github.com/Tom5521/slicelib"
 )
 
-type TestMode int
-
 func Test(t *testing.T) {
-	makers := []func(...int) slicelib.Slicer[int]{
-		func(i ...int) slicelib.Slicer[int] {
+	makers := []func([]int) slicelib.Slicer[int]{
+		func(i []int) slicelib.Slicer[int] {
 			return slicelib.NewLinkedList(i...)
 		},
-		func(i ...int) slicelib.Slicer[int] {
+		func(i []int) slicelib.Slicer[int] {
 			return slicelib.NewSlice(i...)
 		},
-		func(i ...int) slicelib.Slicer[int] {
+		func(i []int) slicelib.Slicer[int] {
 			return slicelib.NewOrderedSlice(i...)
 		},
-		func(i ...int) slicelib.Slicer[int] {
+		func(i []int) slicelib.Slicer[int] {
 			return slicelib.NewComparableSlice(i...)
 		},
 	}
 
 	type test struct {
+		name           string
 		input          []int
 		input2, input3 any
 		expected       any
@@ -32,17 +31,17 @@ func Test(t *testing.T) {
 	}
 
 	tests := []test{
-		// Create
 		{
-			input:    []int{3, 2, 1},
-			expected: []int{3, 2, 1},
+			name:     "Create",
+			input:    []int{1, 2, 3, 4, 5, 6, 7, 8, 9},
+			expected: []int{1, 2, 3, 4, 5, 6, 7, 8, 9},
 
 			pass: func(s slicelib.Slicer[int], tt test) bool {
 				return s.Equal(tt.expected.([]int))
 			},
 		},
-		// Len
 		{
+			name:     "Len",
 			input:    []int{1, 2, 3},
 			expected: 3,
 
@@ -50,8 +49,8 @@ func Test(t *testing.T) {
 				return s.Len() == tt.expected
 			},
 		},
-		// At
 		{
+			name:     "At",
 			input:    []int{1, 2, 3},
 			input2:   2,
 			expected: 3,
@@ -60,8 +59,8 @@ func Test(t *testing.T) {
 				return s.At(tt.input2.(int)) == tt.expected
 			},
 		},
-		// Pop
 		{
+			name:     "Pop",
 			input:    []int{1, 2, 3},
 			expected: []int{1, 2},
 
@@ -70,8 +69,8 @@ func Test(t *testing.T) {
 				return s.Equal(tt.expected.([]int))
 			},
 		},
-		// Contains
 		{
+			name:     "Contains",
 			input:    []int{1, 2, 3},
 			input2:   2,
 			expected: true,
@@ -80,8 +79,8 @@ func Test(t *testing.T) {
 				return s.Contains(tt.input2.(int))
 			},
 		},
-		// Index
 		{
+			name:     "Index",
 			input:    []int{1, 2, 3},
 			input2:   3,
 			expected: 2,
@@ -90,8 +89,8 @@ func Test(t *testing.T) {
 				return s.Index(tt.input2.(int)) == tt.expected
 			},
 		},
-		// Clear
 		{
+			name:     "Clear",
 			input:    []int{1, 2, 3},
 			expected: []int{},
 
@@ -100,8 +99,8 @@ func Test(t *testing.T) {
 				return s.Equal(tt.expected.([]int))
 			},
 		},
-		// Delete
 		{
+			name:     "Delete",
 			input:    []int{1, 2, 3, 4, 5, 6, 7, 8},
 			expected: []int{1, 6, 7, 8},
 			input2:   1,
@@ -112,8 +111,8 @@ func Test(t *testing.T) {
 				return s.Equal(tt.expected.([]int))
 			},
 		},
-		// Append
 		{
+			name:     "Append",
 			input:    []int{1, 2, 3},
 			expected: []int{1, 2, 3, 4},
 			input2:   4,
@@ -123,8 +122,8 @@ func Test(t *testing.T) {
 				return s.Equal(tt.expected.([]int))
 			},
 		},
-		// Reverse
 		{
+			name:     "Reverse",
 			input:    []int{1, 2, 3},
 			expected: []int{3, 2, 1},
 
@@ -133,8 +132,8 @@ func Test(t *testing.T) {
 				return s.Equal(tt.expected.([]int))
 			},
 		},
-		// Set
 		{
+			name:     "Set",
 			input:    []int{1, 2, 3},
 			input2:   2,
 			input3:   2,
@@ -145,8 +144,8 @@ func Test(t *testing.T) {
 				return s.Equal(tt.expected.([]int))
 			},
 		},
-		// SliceLeft
 		{
+			name:     "SliceLeft",
 			input:    []int{1, 2, 3, 4},
 			input2:   2,
 			expected: []int{3, 4},
@@ -156,8 +155,8 @@ func Test(t *testing.T) {
 				return s.Equal(tt.expected.([]int))
 			},
 		},
-		// SliceRight
 		{
+			name:     "SliceRight",
 			input:    []int{1, 2, 3, 4},
 			input2:   2,
 			expected: []int{1, 2},
@@ -167,8 +166,8 @@ func Test(t *testing.T) {
 				return s.Equal(tt.expected.([]int))
 			},
 		},
-		// SliceRange
 		{
+			name:     "SliceRange",
 			input:    []int{1, 2, 3, 4},
 			input2:   1,
 			input3:   3,
@@ -179,8 +178,8 @@ func Test(t *testing.T) {
 				return s.Equal(tt.expected.([]int))
 			},
 		},
-		// RemoveDuplicates
 		{
+			name:     "RemoveDuplicates",
 			input:    []int{1, 1, 2, 2, 3, 3, 4, 4},
 			expected: []int{1, 2, 3, 4},
 
@@ -189,10 +188,10 @@ func Test(t *testing.T) {
 				return s.Equal(tt.expected.([]int))
 			},
 		},
-		// Insert
 		{
+			name:     "Insert",
 			input:    []int{1, 2, 3},
-			input2:   2,
+			input2:   3,
 			input3:   []int{4, 5},
 			expected: []int{1, 2, 3, 4, 5},
 
@@ -201,8 +200,8 @@ func Test(t *testing.T) {
 				return s.Equal(tt.expected.([]int))
 			},
 		},
-		// Filter
 		{
+			name:  "Filter",
 			input: []int{10, 20, 30, 40, 50, 60, 70, 80, 200, 100, 500},
 			input2: func(v int) bool {
 				return v > 10 && v < 100
@@ -214,8 +213,8 @@ func Test(t *testing.T) {
 				return s.Equal(tt.expected.([]int))
 			},
 		},
-		// Equal (comparable)
 		{
+			name:     "Equal",
 			input:    []int{1, 2, 3},
 			input2:   []int{1, 2, 3},
 			expected: true,
@@ -224,8 +223,8 @@ func Test(t *testing.T) {
 				return s.Equal(tt.input2.([]int))
 			},
 		},
-		// Clone
 		{
+			name:     "Clone",
 			input:    []int{1, 2, 3},
 			input2:   []int{1, 2, 3},
 			expected: true,
@@ -234,8 +233,8 @@ func Test(t *testing.T) {
 				return s.Equal(tt.input2.([]int))
 			},
 		},
-		// String
 		{
+			name:     "String",
 			input:    []int{1, 2, 3},
 			expected: "[ 1, 2, 3 ]",
 
@@ -246,18 +245,21 @@ func Test(t *testing.T) {
 	}
 
 	for i, maker := range makers {
+		t.Log("---^---")
 		t.Logf("Testing maker nº %d", i+1)
+		t.Log("---v---")
 		for i, test := range tests {
-			maked := maker(test.input...)
-			t.Logf("Testing nº %d...", i+1)
+			maked := maker(test.input)
+			t.Logf("Test nº %d [%s]...", i+1, test.name)
 			if test.pass == nil {
-				t.Logf("Test nº %d is nil!", i+1)
+				t.Logf("Test nº %d [%s] is nil!", i+1, test.name)
 				t.Log("Skipping...")
 				continue
 			}
 			if !test.pass(maked, test) {
-				t.Logf("Test nº %d fail!", i+1)
-				t.Log("Input:", test.input, "Expected:", test.expected, "Received:", maked)
+				t.Logf("%+v", test)
+				t.Log("Result:", maked)
+				t.Log("--- FAIL ---")
 				t.Fail()
 			} else {
 				t.Log("PASS")
